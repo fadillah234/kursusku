@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 
@@ -42,3 +43,7 @@ Route::get('/courses/{course}/availability', function (string $course) {
         'remaining' => $availability[$course],
     ]);
 })->name('courses.availability');
+
+// Route CRUD Kursus
+Route::resource('courses', CourseController::class);
+
