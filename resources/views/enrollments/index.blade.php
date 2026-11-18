@@ -1,77 +1,50 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Kursus')
+@section('title', 'Laporan Enrollment')
 
 @section('content')
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Daftar Kursus</h2>
-
-    <a href="{{ route('courses.create') }}" class="btn btn-primary">
-        + Tambah Kursus
-    </a>
-</div>
-
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Laporan Enrollment KursusKu</h2>
+            <p class="text-muted mb-0">Data peserta dan kursus yang diikuti.</p>
+        </div>
+        <a href="{{ route('enrollments.create') }}" class="btn btn-primary">+ Tambah Enrollment</a>
     </div>
-@endif
 
-<div class="card shadow-sm">
-    <div class="card-body table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-primary">
-                <tr>
-                    <th>No</th>
-                    <th>Kode</th>
-                    <th>Nama Kursus</th>
-                    <th>Biaya</th>
-                    <th>Kuota</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+    @endif
 
-            <tbody>
-                @forelse($courses as $course)
+    <div class="card shadow-sm">
+        <div class="card-body table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0">
+                <thead class="table-primary">
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $course->code }}</td>
-                        <td>{{ $course->name }}</td>
-                        <td>Rp {{ number_format($course->fee, 0, ',', '.') }}</td>
-                        <td>{{ $course->quota }}</td>
-                        <td>{{ ucfirst($course->status) }}</td>
-                        <td>
-                            <a href="{{ route('courses.show', $course->id) }}"
-                               class="btn btn-info btn-sm">Detail</a>
-
-                            <a href="{{ route('courses.edit', $course->id) }}"
-                               class="btn btn-warning btn-sm">Edit</a>
-
-                            <form action="{{ route('courses.destroy', $course->id) }}"
-                                  method="POST"
-                                  class="d-inline"
-                                  onsubmit="return confirm('Yakin ingin menghapus kursus ini?')">
-                                @csrf
-                                @method('DELETE')
-
-                                <button class="btn btn-danger btn-sm">
-                                    Hapus
-                                </button>
-                            </form>
-                        </td>
+                        <th>No</th>
+                        <th>Participant</th>
+                        <th>Course</th>
+                        <th>Start Date</th>
+                        <th>Status</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center">
-                            Belum ada data kursus.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse ($enrollments as $enrollment)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $enrollment->participant->name }}</td>
+                            <td>{{ $enrollment->course->name }}</td>
+                            <td>{{ $enrollment->course->start_date?->format('d-m-Y') }}</td>
+                            <td><span class="badge bg-success">{{ $enrollment->status }}</span></td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Belum ada enrollment.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
 @endsection

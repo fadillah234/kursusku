@@ -1,17 +1,17 @@
 <?php
 
 use App\Http\Controllers\CourseController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Halaman formulir pendaftaran
+// Pertemuan 9: formulir pendaftaran lama (validasi + Ajax)
 Route::get('/pendaftaran', function () {
-    return view('enrollments.create');
-})->name('enrollments.create');
+    return view('pendaftaran.create');
+})->name('pendaftaran.create');
 
-// Memproses dan memvalidasi formulir
 Route::post('/pendaftaran/preview', function (\Illuminate\Http\Request $request) {
     $validated = $request->validate([
         'name' => ['required', 'string', 'max:255'],
@@ -20,9 +20,9 @@ Route::post('/pendaftaran/preview', function (\Illuminate\Http\Request $request)
     ]);
 
     return redirect()
-        ->route('enrollments.create')
+        ->route('pendaftaran.create')
         ->with('success', 'Validasi berhasil. Formulir pendaftaran siap diperiksa.');
-})->name('enrollments.preview');
+})->name('pendaftaran.preview');
 
 // Data ketersediaan kursus untuk Ajax
 Route::get('/courses/{course}/availability', function (string $course) {
@@ -47,3 +47,6 @@ Route::get('/courses/{course}/availability', function (string $course) {
 // Route CRUD Kursus
 Route::resource('courses', CourseController::class);
 
+// Pertemuan 12: enrollment relasional
+Route::resource('enrollments', EnrollmentController::class)
+    ->only(['index', 'create', 'store']);
